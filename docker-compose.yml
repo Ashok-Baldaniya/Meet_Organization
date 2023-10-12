@@ -1,0 +1,30 @@
+version: '3.8'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 9000:9000
+    volumes:
+      - ./src:/app/src
+    restart: always
+    environment:
+      - dburl=mongodb://mymongo:27017/meeting_app
+    depends_on:
+      - mymongo
+    networks:
+      - meeting_app_network
+
+  mymongo:
+    image: mongo:latest
+    ports:
+      - 27017:27017
+    volumes:
+      - /mongo:/data/db
+    networks:
+      - meeting_app_network
+
+networks:
+  meeting_app_network:
+    driver: 'bridge'
