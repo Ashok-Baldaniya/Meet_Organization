@@ -9,7 +9,7 @@ const Navbar = () => {
   const { room } = useParams();
   const location = useLocation();
   const [rooms, setRooms] = useState([]);
-  const [activeLink, setActiveLink] = useState('Rooms');
+  const [setActiveLink] = useState('Rooms');
 
   useEffect(() => {
     const fetchRooms = async () => {

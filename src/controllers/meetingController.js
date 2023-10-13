@@ -1,22 +1,14 @@
-const meeting = require("../services/meetingService")
-
-let data = function (data, message) {
-  return {
-    success: true,
-    message: message,
-    data: data
-  }
-}
+const meeting = require("../services/meetingService");
 
 module.exports = {
 
   createMeeting: async (req, res, next) => {
     try {
-      const params = { ...req.body, createdBy: req.user._id }
-      const createData = await meeting.createMeeting(params)
-      res.send(data(createData, "Meeting Created"));
+      const params = { ...req.body, createdBy: req.user._id };
+      const createData = await meeting.createMeeting(params);
+      return res.json(createData);
     } catch (error) {
-      next(error)
+      next(error);
     }
   },
 

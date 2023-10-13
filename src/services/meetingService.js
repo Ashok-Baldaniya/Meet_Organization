@@ -4,13 +4,20 @@ const User = require("../models/User")
 module.exports = {
 
   createMeeting: async function (params) {
-    const addMeeting = new Meeting(params);
-    addMeeting.populate({
-      path: 'invitations.userId',
-      select: 'name email-_id'
-    })
-    await addMeeting.save()
-    return addMeeting;
+    const Participent = await User.findOne({ username: 'jay' });
+    const newMeeting = await Meeting.create({
+      title: params.title,
+      description: params.description,
+      duration: params.duration,
+      participants: { userId: Participent._id },
+      organizer: params.createdBy,
+    });
+    await newMeeting.save().populate({
+      path: 'participants.userId',
+      select: 'username email-_id'
+    });
+    await User.findByIdAndUpdate({ _id: Participent._id }, { meetings_attended: newMeeting._id });
+    return newMeeting;
   },
 
   updateMeeting: async function (params) {
@@ -20,7 +27,7 @@ module.exports = {
         path: 'invitations.userId',
         select: 'name email-_id'
       })
-      return updateMeeting
+      return updateMeeting;
     }
   },
 
@@ -32,17 +39,17 @@ module.exports = {
       path: 'invitations.userId',
       select: 'name email-_id'
     })
-    return viewData
+    return viewData;
   },
 
   cancelMeeting: async function (params) {
-    const user = await Meeting.findOne({ createdBy: params.user })
+    const user = await Meeting.findOne({ createdBy: params.user });
     if (user) {
       const deleteData = await Meeting.findByIdAndDelete({ _id: params.id }).populate({
         path: 'invitations.userId',
         select: 'name email-_id'
       })
-      return deleteData
+      return deleteData;
     }
   },
 
@@ -55,7 +62,7 @@ module.exports = {
       select: 'name email-_id'
     })
     if (getAllData.length != 0) {
-      return getAllData
+      return getAllData;
     }
   },
 

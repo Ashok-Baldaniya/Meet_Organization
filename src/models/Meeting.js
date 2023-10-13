@@ -10,10 +10,12 @@ const meetingSchema = new Schema({
         type: String
     },
     date: {
-        type: Date
+        type: Date,
+        default: new Date().toISOString()
     },
     duration: {
-        type: Number
+        type: Number,
+        default: 30,
     },
     participants: [{
         userId: {
