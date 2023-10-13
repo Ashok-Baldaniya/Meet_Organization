@@ -1,4 +1,4 @@
-const User = require("../models/User")
+const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 
 module.exports = {
@@ -16,16 +16,24 @@ module.exports = {
     const isvalid = await bcrypt.compare(params.password, user.password);
     if (isvalid) {
       const token = await user.generateToken();
-      user.token = token;
-      return user;
+      return token;
     }
   },
 
-  viewAllUser: async () => {
+  getAllUser: async () => {
     const allUser = await User.find();
-    if (!allUser) {
-      throw new Error("No user found, Please Register First");
+    if (!allUser || allUser.length === 0) {
+      throw new Error('No user found, Please Register First');
     }
     return allUser;
-  }
+  },
+
+  removeUser: async (id) => {
+    const user = await User.findById(id);
+    if (user) {
+      await User.deleteOne({ _id: id });
+      return user;
+    }
+    throw new Error('No user found with given Id');
+  },
 }

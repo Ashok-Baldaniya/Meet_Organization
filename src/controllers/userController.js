@@ -1,3 +1,4 @@
+const User = require('../models/User');
 const userService = require("../services/userService");
 
 module.exports = {
@@ -5,9 +6,9 @@ module.exports = {
     try {
       const params = { ...req.body, ...req.params };
       const userdata = await userService.userRegister(params);
-      res.send(userdata);
+      return res.json(userdata);
     } catch (error) {
-      next(error)
+      next(error);
     }
   },
 
@@ -15,21 +16,38 @@ module.exports = {
     try {
       const params = { ...req.body, ...req.params };
       const userToken = await userService.userLogin(params);
-      res.json({
-        token: userToken,
-        message: 'Login successful'
-      });
+      return res.json({ token: userToken });
     } catch (error) {
-      next(error)
+      next(error);
     }
   },
 
-  viewAllUser: async (req, res, next) => {
+  getAllUser: async (req, res, next) => {
     try {
-      const allUser = await userService.viewAllUser();
-      res.json(allUser);
+      const allUser = await userService.getAllUser();
+      return res.json(allUser);
     } catch (error) {
-      next(error)
+      next(error);
     }
-  }
+  },
+
+  removeUser: async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const deletedUser = await userService.removeUser(id);
+      return res.json(deletedUser);
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  getSingleUser: async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const user = await User.findOne({ _id: id });
+      return res.json(user);
+    } catch (error) {
+      next(error);
+    }
+  },
 }

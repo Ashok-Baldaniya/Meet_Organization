@@ -6,13 +6,16 @@ const { Schema } = mongoose;
 
 const userSchema = new Schema({
     username: {
-        type: String
+        type: String,
+        required: true
     },
     email: {
-        type: String
+        type: String,
+        required: true
     },
     password: {
         type: String,
+        required: true
     },
     token: {
         type: String
@@ -37,14 +40,10 @@ userSchema.pre("save", async function (next) {
 })
 
 userSchema.methods.generateToken = async function () {
-    try {
-        const token = await jwt.sign({ _id: this._id }, process.env.skey)
-        this.token = token;
-        this.save()
-        return token
-    } catch (error) {
-        console.log(error);
-    }
+    const token = jwt.sign({ _id: this._id }, process.env.skey);
+    this.token = token;
+    this.save();
+    return token;
 }
 
 module.exports = new mongoose.model("User", userSchema)
