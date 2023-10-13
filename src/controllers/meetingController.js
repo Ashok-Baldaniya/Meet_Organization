@@ -1,11 +1,12 @@
-const meeting = require("../services/meetingService");
+const meetingService = require("../services/meetingService");
+const Meeting = require('../models/Meeting');
 
 module.exports = {
 
   createMeeting: async (req, res, next) => {
     try {
       const params = { ...req.body, createdBy: req.user._id };
-      const createData = await meeting.createMeeting(params);
+      const createData = await meetingService.createMeeting(params);
       return res.json(createData);
     } catch (error) {
       next(error);
@@ -14,19 +15,19 @@ module.exports = {
 
   updateMeeting: async (req, res, next) => {
     try {
-      const params = { ...req.body, user: req.user._id, ...req.params }
-      const updateData = await meeting.updateMeeting(params)
-      res.send(data(updateData, "Meeting Updated"));
+      const params = { ...req.body, user: req.user._id, ...req.params };
+      const updateData = await meetingService.updateMeeting(params);
+      return res.json(updateData);
     } catch (error) {
       next(error)
     }
   },
 
-  viewMeeting: async (req, res, next) => {
+  getMeeting: async (req, res, next) => {
     try {
-      const params = { ...req.body, ...req.params }
-      const viewMeeting = await meeting.viewMeeting(params)
-      res.send(data(viewMeeting, "Show Meeting by Id"))
+      const { id } = req.params;
+      const meeting = await meetingService.getMeeting(id);
+      return res.json(meeting);
     } catch (error) {
       next(error)
     }
@@ -35,17 +36,17 @@ module.exports = {
   cancelMeeting: async (req, res, next) => {
     try {
       const params = { ...req.params, user: req.user }
-      const deleteMeeting = await meeting.cancelMeeting(params)
+      const deleteMeeting = await meetingService.cancelMeeting(params)
       res.send(data(deleteMeeting, "Meeting canceled"))
     } catch (error) {
       next(error)
     }
   },
 
-  viewAllMeeting: async (req, res, next) => {
+  getAllMeeting: async (req, res, next) => {
     try {
-      const getMeeting = await meeting.viewAllMeeting()
-      res.send(data(getMeeting, "Show All Meetings"))
+      const allMeeting = await Meeting.find().populate('participants.userId', 'username email-_id').populate('organizer', 'username email-_id');
+      return res.json(allMeeting);
     } catch (error) {
       next(error)
     }
@@ -54,7 +55,7 @@ module.exports = {
   updateInvitationStatus: async (req, res, next) => {
     try {
       const params = { ...req.body, ...req.params, user: req.user }
-      const updateMeeting = await meeting.updateInvitationStatus(params)
+      const updateMeeting = await meetingService.updateInvitationStatus(params)
       res.send(data(updateMeeting, "Invitation Status Updated"))
     } catch (error) {
       next(error)

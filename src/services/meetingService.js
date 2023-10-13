@@ -16,29 +16,33 @@ module.exports = {
       path: 'participants.userId',
       select: 'username email-_id'
     });
-    await User.findByIdAndUpdate({ _id: Participent._id }, { meetings_attended: newMeeting._id });
+    const data = {
+      $push: { meetings_attended: newMeeting._id }
+    }
+    await User.findByIdAndUpdate(Participent._id, data);
     return newMeeting;
   },
 
   updateMeeting: async function (params) {
-    const user = await Meeting.findOne({ createdBy: params.user })
+    const user = await Meeting.findOne({ organizer: params.user });
     if (user) {
       const updateMeeting = await Meeting.findByIdAndUpdate({ _id: params.id }, params).populate({
-        path: 'invitations.userId',
+        path: 'participants.userId',
         select: 'name email-_id'
       })
       return updateMeeting;
     }
+    throw new Error('Not Authorised to access');
   },
 
-  viewMeeting: async function (params) {
-    const viewData = await Meeting.findOne({ _id: params.id }).populate({
-      path: 'createdBy',
-      select: 'name email -_id'
-    }).populate({
-      path: 'invitations.userId',
+  getMeeting: async function (id) {
+    const viewData = await Meeting.findOne({ _id: id }).populate({
+      path: 'organizer',
       select: 'name email-_id'
-    })
+    }).populate({
+      path: 'participants.userId',
+      select: 'name email-_id'
+    });
     return viewData;
   },
 
@@ -53,7 +57,7 @@ module.exports = {
     }
   },
 
-  viewAllMeeting: async function () {
+  getAllMeeting: async function () {
     const getAllData = await Meeting.find().populate({
       path: 'createdBy',
       select: 'name email -_id'
