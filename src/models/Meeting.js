@@ -24,7 +24,7 @@ const meetingSchema = new Schema({
         },
         response: {
             type: String,
-            enum: ["accept", "reject", "pending"],
+            enum: ['accept', 'reject', 'pending', 'cancel'],
             default: "pending"
         }
     }],

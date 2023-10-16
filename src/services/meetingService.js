@@ -12,7 +12,7 @@ module.exports = {
       participants: { userId: Participent._id },
       organizer: params.createdBy,
     });
-    await newMeeting.save().populate({
+    await newMeeting.populate({
       path: 'participants.userId',
       select: 'username email-_id'
     });
@@ -25,72 +25,56 @@ module.exports = {
 
   updateMeeting: async function (params) {
     const user = await Meeting.findOne({ organizer: params.user });
-    if (user) {
-      const updateMeeting = await Meeting.findByIdAndUpdate({ _id: params.id }, params).populate({
-        path: 'participants.userId',
-        select: 'name email-_id'
-      })
-      return updateMeeting;
-    }
-    throw new Error('Not Authorised to access');
-  },
-
-  getMeeting: async function (id) {
-    const viewData = await Meeting.findOne({ _id: id }).populate({
-      path: 'organizer',
-      select: 'name email-_id'
-    }).populate({
+    if (!user) {
+      throw new Error('No Auth user found');
+    };
+    const updateMeeting = await Meeting.findByIdAndUpdate({ _id: params.id }, params).populate({
       path: 'participants.userId',
       select: 'name email-_id'
     });
-    return viewData;
+    return updateMeeting;
   },
 
   cancelMeeting: async function (params) {
-    const user = await Meeting.findOne({ createdBy: params.user });
-    if (user) {
-      const deleteData = await Meeting.findByIdAndDelete({ _id: params.id }).populate({
-        path: 'invitations.userId',
-        select: 'name email-_id'
-      })
-      return deleteData;
+    const meeting = await Meeting.findOne({ _id: params.id });
+    if (!meeting) {
+      throw new Error('No meeting found');
     }
-  },
 
-  getAllMeeting: async function () {
-    const getAllData = await Meeting.find().populate({
-      path: 'createdBy',
-      select: 'name email -_id'
-    }).populate({
-      path: 'invitations.userId',
+    const creator = await User.findOne({ _id: meeting.organizer });
+    if (!(creator && creator._id.toString() === params.user._id)) {
+      throw new Error('No Authorize to access this user');
+    }
+    const deleteData = await Meeting.findByIdAndDelete({ _id: params.id }).populate({
+      path: 'participants.userId',
       select: 'name email-_id'
-    })
-    if (getAllData.length != 0) {
-      return getAllData;
-    }
+    });
+    return deleteData;
   },
 
-  updateInvitationStatus: async function (params) {
-    const updateData = await Meeting.findOne({ _id: params.id }).populate({
-      path: 'createdBy',
-      select: 'name email -_id'
-    })
-    const id = params.user._id;
+  updateMeetingResponse: async function (params) {
+    const meeting = await Meeting.findOne({ _id: params.id }).populate({
+      path: 'organizer',
+      select: 'name email-_id'
+    });
+
+    if (!meeting) {
+      throw new Error('Meeting not found');
+    }
     let flag = false;
-    updateData["invitations"].forEach(element => {
-      let elementId = element.userId;
-      elementId = elementId.toString();
-      if (elementId === id) {
-        element.status = params.status
-        flag = true
+    const auth_user_id = params.user._id;
+
+    meeting.participants.forEach(element => {
+      let user_Id = element.userId.toString();
+      if (user_Id === auth_user_id) {
+        flag = true;
+        element.response = params.response;
       }
     });
-    if (flag) {
-      updateData.save()
-      return updateData
+    if (!flag) {
+      throw new Error('Not authorized to access');
     }
-    else {
-      throw new Error("user Id not found")
-    }
+    await meeting.save();
+    return meeting;
   }
 }

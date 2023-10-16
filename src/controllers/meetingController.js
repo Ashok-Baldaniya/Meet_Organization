@@ -19,27 +19,33 @@ module.exports = {
       const updateData = await meetingService.updateMeeting(params);
       return res.json(updateData);
     } catch (error) {
-      next(error)
+      next(error);
     }
   },
 
   getMeeting: async (req, res, next) => {
     try {
       const { id } = req.params;
-      const meeting = await meetingService.getMeeting(id);
+      const meeting = await Meeting.findOne({ _id: id }).populate({
+        path: 'organizer',
+        select: 'name email-_id'
+      }).populate({
+        path: 'participants.userId',
+        select: 'name email-_id'
+      });
       return res.json(meeting);
     } catch (error) {
-      next(error)
+      next(error);
     }
   },
 
   cancelMeeting: async (req, res, next) => {
     try {
-      const params = { ...req.params, user: req.user }
-      const deleteMeeting = await meetingService.cancelMeeting(params)
-      res.send(data(deleteMeeting, "Meeting canceled"))
+      const params = { ...req.params, user: req.user };
+      const deletedMeeting = await meetingService.cancelMeeting(params);
+      return res.json(deletedMeeting);
     } catch (error) {
-      next(error)
+      next(error);
     }
   },
 
@@ -48,17 +54,17 @@ module.exports = {
       const allMeeting = await Meeting.find().populate('participants.userId', 'username email-_id').populate('organizer', 'username email-_id');
       return res.json(allMeeting);
     } catch (error) {
-      next(error)
+      next(error);
     }
   },
 
-  updateInvitationStatus: async (req, res, next) => {
+  updateMeetingResponse: async (req, res, next) => {
     try {
-      const params = { ...req.body, ...req.params, user: req.user }
-      const updateMeeting = await meetingService.updateInvitationStatus(params)
-      res.send(data(updateMeeting, "Invitation Status Updated"))
+      const params = { ...req.body, ...req.params, user: req.user };
+      const updatedResponse = await meetingService.updateMeetingResponse(params);
+      return res.json(updatedResponse);
     } catch (error) {
-      next(error)
+      next(error);
     }
   }
 }

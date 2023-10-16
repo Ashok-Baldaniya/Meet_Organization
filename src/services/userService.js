@@ -21,7 +21,7 @@ module.exports = {
   },
 
   getAllUser: async () => {
-    const allUser = await User.find();
+    const allUser = await User.find().populate('meetings_attended');
     if (!allUser || allUser.length === 0) {
       throw new Error('No user found, Please Register First');
     }
