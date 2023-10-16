@@ -42,13 +42,22 @@ module.exports = {
     }
 
     const creator = await User.findOne({ _id: meeting.organizer });
-    if (!(creator && creator._id.toString() === params.user._id)) {
-      throw new Error('No Authorize to access this user');
+    if (!creator || creator._id.toString() !== params.user._id) {
+      throw new Error('Not authorized to access this meeting');
     }
-    const deleteData = await Meeting.findByIdAndDelete({ _id: params.id }).populate({
-      path: 'participants.userId',
-      select: 'name email-_id'
-    });
+
+    const participants = meeting.participants;
+    for (const participant of participants) {
+      const user = await User.findById(participant.userId);
+      if (!user) {
+        continue;
+      }
+      user.meetings_attended = user.meetings_attended.filter(
+        (meetingId) => meetingId.toString() !== params.id
+      );
+      await user.save();
+    }
+    const deleteData = await Meeting.findByIdAndDelete(params.id);
     return deleteData;
   },
 
