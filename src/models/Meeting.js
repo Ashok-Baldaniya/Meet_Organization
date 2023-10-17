@@ -24,7 +24,7 @@ const meetingSchema = new Schema({
         },
         response: {
             type: String,
-            enum: ['accept', 'reject', 'pending', 'cancel'],
+            enum: ['accept', 'reject', 'pending'],
             default: "pending"
         }
     }],
@@ -34,5 +34,6 @@ const meetingSchema = new Schema({
     }
 }, {
     timestamps: true
-})
-module.exports = new mongoose.model("Meeting", meetingSchema)
+});
+
+module.exports = new mongoose.model("Meeting", meetingSchema);

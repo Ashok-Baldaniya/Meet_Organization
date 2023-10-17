@@ -26,7 +26,7 @@ const userSchema = new Schema({
     }]
 }, {
     timestamps: true
-})
+});
 
 userSchema.pre("save", async function (next) {
     try {
@@ -46,4 +46,4 @@ userSchema.methods.generateToken = async function () {
     return token;
 }
 
-module.exports = new mongoose.model("User", userSchema)
+module.exports = new mongoose.model("User", userSchema);
