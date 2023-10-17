@@ -2,7 +2,7 @@ const User = require('../models/User');
 const userService = require("../services/userService");
 
 module.exports = {
-  userRegister: async (req, res, next) => {
+  async userRegister(req, res, next) {
     try {
       const params = { ...req.body, ...req.params };
       const userdata = await userService.userRegister(params);
@@ -12,7 +12,7 @@ module.exports = {
     }
   },
 
-  userLogin: async (req, res, next) => {
+  async userLogin(req, res, next) {
     try {
       const params = { ...req.body, ...req.params };
       const userToken = await userService.userLogin(params);
@@ -22,7 +22,7 @@ module.exports = {
     }
   },
 
-  getAllUser: async (req, res, next) => {
+  async getAllUser(req, res, next) {
     try {
       const allUser = await userService.getAllUser();
       return res.json(allUser);
@@ -31,7 +31,7 @@ module.exports = {
     }
   },
 
-  removeUser: async (req, res, next) => {
+  async removeUser(req, res, next) {
     try {
       const { id } = req.params;
       const deletedUser = await userService.removeUser(id);
@@ -41,7 +41,7 @@ module.exports = {
     }
   },
 
-  getSingleUser: async (req, res, next) => {
+  async getSingleUser(req, res, next) {
     try {
       const { id } = req.params;
       const user = await User.findOne({ _id: id });

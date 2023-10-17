@@ -3,7 +3,7 @@ const Meeting = require('../models/Meeting');
 
 module.exports = {
 
-  createMeeting: async (req, res, next) => {
+  async createMeeting(req, res, next) {
     try {
       const params = { ...req.body, createdBy: req.user._id };
       const createData = await meetingService.createMeeting(params);
@@ -13,7 +13,7 @@ module.exports = {
     }
   },
 
-  updateMeeting: async (req, res, next) => {
+  async updateMeeting(req, res, next) {
     try {
       const params = { ...req.body, user: req.user._id, ...req.params };
       const updateData = await meetingService.updateMeeting(params);
@@ -23,7 +23,7 @@ module.exports = {
     }
   },
 
-  getMeeting: async (req, res, next) => {
+  async getMeeting(req, res, next) {
     try {
       const { id } = req.params;
       const meeting = await Meeting.findOne({ _id: id }).populate({
@@ -39,7 +39,7 @@ module.exports = {
     }
   },
 
-  cancelMeeting: async (req, res, next) => {
+  async cancelMeeting(req, res, next) {
     try {
       const params = { ...req.params, user: req.user };
       const deletedMeeting = await meetingService.cancelMeeting(params);
@@ -49,7 +49,7 @@ module.exports = {
     }
   },
 
-  getAllMeeting: async (req, res, next) => {
+  async getAllMeeting(req, res, next) {
     try {
       const allMeeting = await Meeting.find().populate('participants.userId', 'username email-_id').populate('organizer', 'username email-_id');
       return res.json(allMeeting);
@@ -58,7 +58,7 @@ module.exports = {
     }
   },
 
-  updateMeetingResponse: async (req, res, next) => {
+  async updateMeetingResponse(req, res, next) {
     try {
       const params = { ...req.body, ...req.params, user: req.user };
       const updatedResponse = await meetingService.updateMeetingResponse(params);

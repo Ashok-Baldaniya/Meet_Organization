@@ -3,7 +3,7 @@ const User = require("../models/User")
 
 module.exports = {
 
-  createMeeting: async function (params) {
+  async createMeeting(params) {
     const Participent = await User.findOne({ username: 'jay' });
     const newMeeting = await Meeting.create({
       title: params.title,
@@ -23,7 +23,7 @@ module.exports = {
     return newMeeting;
   },
 
-  updateMeeting: async function (params) {
+  async updateMeeting(params) {
     const user = await Meeting.findOne({ organizer: params.user });
     if (!user) {
       throw new Error('No Auth user found');
@@ -35,7 +35,7 @@ module.exports = {
     return updateMeeting;
   },
 
-  cancelMeeting: async function (params) {
+  async cancelMeeting(params) {
     const meeting = await Meeting.findOne({ _id: params.id });
     if (!meeting) {
       throw new Error('No meeting found');
@@ -61,7 +61,7 @@ module.exports = {
     return deleteData;
   },
 
-  updateMeetingResponse: async function (params) {
+  async updateMeetingResponse(params) {
     const meeting = await Meeting.findOne({ _id: params.id }).populate({
       path: 'organizer',
       select: 'name email-_id'

@@ -2,7 +2,7 @@ const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 
 module.exports = {
-  userRegister: async (params) => {
+  async userRegister(params) {
     const user = await User.findOne({ email: params.email });
     if (user) {
       throw new Error('User with email address already registered');
@@ -11,7 +11,7 @@ module.exports = {
     return data;
   },
 
-  userLogin: async (params) => {
+  async userLogin(params) {
     const user = await User.findOne({ email: params.email });
     const isvalid = await bcrypt.compare(params.password, user.password);
     if (isvalid) {
@@ -20,7 +20,7 @@ module.exports = {
     }
   },
 
-  getAllUser: async () => {
+  async getAllUser() {
     const allUser = await User.find().populate('meetings_attended');
     if (!allUser || allUser.length === 0) {
       throw new Error('No user found, Please Register First');
@@ -28,7 +28,7 @@ module.exports = {
     return allUser;
   },
 
-  removeUser: async (id) => {
+  async removeUser(id) {
     const user = await User.findById(id);
     if (user) {
       await User.deleteOne({ _id: id });
