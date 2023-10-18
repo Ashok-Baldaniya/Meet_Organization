@@ -3,16 +3,12 @@ const bcrypt = require("bcryptjs");
 
 module.exports = {
   async userRegister(params) {
-    try {
-      const user = await User.findOne({ email: params.email });
-      if (user) {
-        throw new Error('User with email address already registered');
-      }
-      const data = await User.create(params);
-      return data;
-    } catch (error) {
-      throw new Error(error);
+    const user = await User.findOne({ email: params.email });
+    if (user) {
+      throw new Error('User with email address already registered');
     }
+    const data = await User.create(params);
+    return data;
   },
 
   async userLogin(params) {
@@ -23,18 +19,6 @@ module.exports = {
         const token = await user.generateToken();
         return token;
       }
-    } catch (error) {
-      throw new Error(error);
-    }
-  },
-
-  async getAllUser() {
-    try {
-      const allUser = await User.find().populate('meetings');
-      if (!allUser || allUser.length === 0) {
-        throw new Error('No user found, Please Register First');
-      }
-      return allUser;
     } catch (error) {
       throw new Error(error);
     }

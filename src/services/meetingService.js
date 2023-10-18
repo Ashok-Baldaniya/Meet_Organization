@@ -4,27 +4,26 @@ const User = require("../models/User")
 module.exports = {
 
   async createMeeting(params) {
-    try {
-      const Participent = await User.findOne({ username: 'jay' });
-      const newMeeting = await Meeting.create({
-        title: params.title,
-        description: params.description,
-        duration: params.duration,
-        participants: { userId: Participent._id },
-        organizer: params.createdBy,
-      });
-      await newMeeting.populate({
-        path: 'participants.userId',
-        select: 'username email-_id'
-      });
-      const data = {
-        $push: { meetings: newMeeting._id }
-      }
-      await User.findByIdAndUpdate(Participent._id, data);
-      return newMeeting;
-    } catch (error) {
-      throw new Error(error);
+    const Participent = await User.findOne({ username: 'Jay' });
+    if (!Participent) {
+      throw new Error('No user found');
     }
+    const newMeeting = await Meeting.create({
+      title: params.title,
+      description: params.description,
+      duration: params.duration,
+      participants: { userId: Participent._id },
+      organizer: params.createdBy,
+    });
+    await newMeeting.populate({
+      path: 'participants.userId',
+      select: 'username email-_id'
+    });
+    const data = {
+      $push: { meetings: newMeeting._id }
+    }
+    await User.findByIdAndUpdate(Participent._id, data);
+    return newMeeting;
   },
 
   async updateMeeting(params) {

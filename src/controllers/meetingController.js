@@ -4,9 +4,13 @@ const Meeting = require('../models/Meeting');
 module.exports = {
 
   async createMeeting(req, res, next) {
-    const params = { ...req.body, createdBy: req.user._id };
-    const createData = await meetingService.createMeeting(params);
-    return res.json(createData);
+    try {
+      const params = { ...req.body, createdBy: req.user._id };
+      const createData = await meetingService.createMeeting(params);
+      return res.json(createData);
+    } catch (error) {
+      next(error);
+    }
   },
 
   async updateMeeting(req, res, next) {

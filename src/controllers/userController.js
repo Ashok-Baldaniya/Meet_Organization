@@ -3,9 +3,13 @@ const userService = require("../services/userService");
 
 module.exports = {
   async userRegister(req, res, next) {
-    const params = { ...req.body, ...req.params };
-    const userdata = await userService.userRegister(params);
-    return res.json(userdata);
+    try {
+      const params = { ...req.body, ...req.params };
+      const userdata = await userService.userRegister(params);
+      return res.json(userdata);
+    } catch (error) {
+      next(error);
+    }
   },
 
   async userLogin(req, res, next) {
@@ -15,7 +19,10 @@ module.exports = {
   },
 
   async getAllUser(req, res, next) {
-    const allUser = await userService.getAllUser();
+    const allUser = await User.find().populate('meetings');
+    if (!allUser || allUser.length === 0) {
+      throw new Error('No user found, Please Register First');
+    }
     return res.json(allUser);
   },
 
