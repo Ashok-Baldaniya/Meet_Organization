@@ -18,7 +18,7 @@ module.exports = {
         select: 'username email-_id'
       });
       const data = {
-        $push: { meetings_attended: newMeeting._id }
+        $push: { meetings: newMeeting._id }
       }
       await User.findByIdAndUpdate(Participent._id, data);
       return newMeeting;
@@ -61,7 +61,7 @@ module.exports = {
         if (!user) {
           continue;
         }
-        user.meetings_attended = user.meetings_attended.filter(
+        user.meetings = user.meetings.filter(
           (meetingId) => meetingId.toString() !== params.id
         );
         await user.save();

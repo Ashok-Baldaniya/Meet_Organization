@@ -30,7 +30,7 @@ module.exports = {
 
   async getAllUser() {
     try {
-      const allUser = await User.find().populate('meetings_attended');
+      const allUser = await User.find().populate('meetings');
       if (!allUser || allUser.length === 0) {
         throw new Error('No user found, Please Register First');
       }

@@ -20,7 +20,7 @@ const userSchema = new Schema({
     token: {
         type: String
     },
-    meetings_attended: [{
+    meetings: [{
         type: Schema.Types.ObjectId,
         ref: 'Meeting',
     }]
