@@ -8,8 +8,8 @@ module.exports = {
       const userdata = await userService.userRegister(params);
       return res.json(userdata);
     } catch (error) {
-      next(error);
-    }
+      return res.status(500).json(error);
+      }
   },
 
   async userLogin(req, res, next) {

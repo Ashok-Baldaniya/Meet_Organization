@@ -4,10 +4,11 @@ const express = require("express");
 const app = express();
 const PORT = process.env.port || 9000
 const ErrorHandler = require("./middleware/error");
+const cors = require('cors');
 
 const dbConnection = require("./config/db");
 dbConnection();
-
+app.use(cors());
 app.use(express.json());
 
 const routes = require("./routes/index")

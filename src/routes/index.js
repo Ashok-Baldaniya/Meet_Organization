@@ -1,6 +1,11 @@
 const express = require("express");
 const router = express();
 
+
+router.get('/',(req,res)=>{
+    res.json('-------------------success--------------------');
+});
+
 const userRoute = require("./user");
 router.use("/api/user", userRoute);
 

@@ -1,4 +1,4 @@
-import { faCalendar, faClockRotateLeft, faHouse } from '@fortawesome/free-solid-svg-icons';
+import { faCalendar, faClockRotateLeft, faHouse, faUser } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useEffect, useState } from 'react';
 import { NavLink, useLocation, useParams } from 'react-router-dom';
@@ -65,9 +65,16 @@ const Navbar = () => {
         className={({ isActive }) => isActive ? styles.activeLink : styles.link}
         onClick={() => setActiveLink('Register')}
       >
-        <FontAwesomeIcon className={styles.icon} icon={faClockRotateLeft} />
+        <FontAwesomeIcon className={styles.icon} icon={faUser} />
       </NavLink>
 
+      {/* <NavLink
+        to={`/login`}
+        className={({ isActive }) => isActive ? styles.activeLink : styles.link}
+        onClick={() => setActiveLink('Login')}
+      >
+        <FontAwesomeIcon className={styles.icon} icon={faUser} />
+      </NavLink> */}
 
     </nav>
   );

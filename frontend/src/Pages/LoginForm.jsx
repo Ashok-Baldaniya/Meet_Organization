@@ -1,14 +1,11 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
-const SignupForm = () => {
+const LoginForm = () => {
     const [formData, setFormData] = useState({
         username: "",
         email: "",
         password: ""
     });
-
-    const navigateTo = useNavigate();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -21,7 +18,7 @@ const SignupForm = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        fetch('http://localhost:9000/api/user/register', {
+        fetch('http://localhost:9000/api/user/login', {
           method: "POST",
           body: JSON.stringify(formData),
           headers: {
@@ -30,27 +27,15 @@ const SignupForm = () => {
         })
           .then((response) => response)
           .then((data) => {
-            if (data.status === 200) {
-                navigateTo("/login");
-              } 
+            console.log(data);
           })
           .catch((error) => {
-            throw error;
+            console.log(error);
           });
     };
 
     return (
         <form onSubmit={handleSubmit}>
-            <div>
-                <label>Username</label>
-                <input
-                    type="text"
-                    name="username"
-                    value={formData.username}
-                    onChange={handleChange}
-                />
-            </div>
-
             <div>
                 <label>Email</label>
                 <input
@@ -71,9 +56,9 @@ const SignupForm = () => {
                 />
             </div>
 
-            <button type="submit">Sign Up</button>
+            <button type="submit">Login</button>
         </form>
     );
 };
 
-export default SignupForm;
+export default LoginForm;
