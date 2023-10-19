@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const LoginForm = () => {
     const [formData, setFormData] = useState({
@@ -6,7 +7,7 @@ const LoginForm = () => {
         email: "",
         password: ""
     });
-
+    const navigateTo = useNavigate();
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({
@@ -19,20 +20,24 @@ const LoginForm = () => {
         e.preventDefault();
 
         fetch('http://localhost:9000/api/user/login', {
-          method: "POST",
-          body: JSON.stringify(formData),
-          headers: {
-            "Content-Type": "application/json",
-          },
+            method: "POST",
+            body: JSON.stringify(formData),
+            headers: {
+                "Content-Type": "application/json",
+            },
         })
-          .then((response) => response)
-          .then((data) => {
-            console.log(data);
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+            .then((response) => response)
+            .then((data) => {
+                console.log(data);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     };
+
+    const goToRegister = () => {
+        navigateTo("/register");
+    }
 
     return (
         <form onSubmit={handleSubmit}>
@@ -57,6 +62,7 @@ const LoginForm = () => {
             </div>
 
             <button type="submit">Login</button>
+            <button onClick={goToRegister}>Go To Register</button>
         </form>
     );
 };
